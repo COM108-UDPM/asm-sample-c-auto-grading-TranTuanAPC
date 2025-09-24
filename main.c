@@ -16,4 +16,5 @@ int main() {
     printf("Tong hai so la: %.2f\n", Tong);
 
     return 0;
+    
 }
