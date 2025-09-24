@@ -13,20 +13,20 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    - name: Build test_runner
-      id: build-test_runner
+    - name: Build test
+      id: build-test
       uses: classroom-resources/autograding-command-grader@v1
       with:
-        test-name: Build test_runner
+        test-name: Build test
         setup-command: ''
         command: gcc -c cunit-src/*.c -I include && ar rcs lib/libCUnit.a *.o && gcc
           -o test_runner test/test_tinh_tong.c src/my_functions.c -I include -Llib
           -lCUnit
         timeout: 10
-        max-score: 5
+        max-score: 10
     - name: Autograding Reporter
       uses: classroom-resources/autograding-grading-reporter@v1
       env:
-        BUILD-TEST_RUNNER_RESULTS: "${{steps.build-test_runner.outputs.result}}"
+        BUILD-TEST_RESULTS: "${{steps.build-test.outputs.result}}"
       with:
-        runners: build-test_runner
+        runners: build-test
