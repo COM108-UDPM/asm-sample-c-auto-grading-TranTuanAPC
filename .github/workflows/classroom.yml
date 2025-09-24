@@ -13,6 +13,15 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+    - name: Test build app
+      id: test-build-app
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Test build app
+        setup-command: ''
+        command: gcc -o my_program main.c src/my_functions.c -I include
+        timeout: 10
+        max-score: 5
     - name: Build test
       id: build-test
       uses: classroom-resources/autograding-command-grader@v1
@@ -23,10 +32,21 @@ jobs:
           -o test_runner test/test_tinh_tong.c src/my_functions.c -I include -Llib
           -lCUnit
         timeout: 10
-        max-score: 10
+        max-score: 5
+    - name: Run test
+      id: run-test
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Run test
+        setup-command: ''
+        command: "./test_runner"
+        timeout: 10
+        max-score: 5
     - name: Autograding Reporter
       uses: classroom-resources/autograding-grading-reporter@v1
       env:
+        TEST-BUILD-APP_RESULTS: "${{steps.test-build-app.outputs.result}}"
         BUILD-TEST_RESULTS: "${{steps.build-test.outputs.result}}"
+        RUN-TEST_RESULTS: "${{steps.run-test.outputs.result}}"
       with:
-        runners: build-test
+        runners: test-build-app,build-test,run-test
